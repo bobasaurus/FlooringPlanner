@@ -72,6 +72,11 @@ namespace FlooringPlanner
             row = new List<FlooringRectangle>();
 
             if (firstBoardLength > boardLength) throw new Exception("Invalid first board length: " + firstBoardLength);
+            if (firstBoardLength < 0)
+            {
+                //throw new Exception("First board length too low: " + firstBoardLength);
+                firstBoardLength = 0;
+            }
             float residualLength = 0;
 
             float locationX = expansionGap;
@@ -120,7 +125,12 @@ namespace FlooringPlanner
         {
             row = new List<FlooringRectangle>();
 
-            if (firstBoardLength > boardLength) throw new Exception("Invalid first board length: " + firstBoardLength);
+            if (firstBoardLength > boardLength) throw new Exception("Invalid first board length (reverse): " + firstBoardLength);
+            if (firstBoardLength < 0)
+            {
+                //throw new Exception("First board length too low (reverse): " + firstBoardLength);
+                firstBoardLength = 0;
+            }
             float residualLength = 0;
 
             float locationX = roomWidth - expansionGap - firstBoardLength;
@@ -158,9 +168,9 @@ namespace FlooringPlanner
                     if (fr.Width < smallestDesiredBoardLength) fr.FillColor = Color.Red;
                     fr.IsReverse = true;
                     row.Add(fr);
-
-                    locationX -= currentBoardLength;
+                    
                     currentBoardLength = boardLength;
+                    locationX -= currentBoardLength;
                 }
             }
 

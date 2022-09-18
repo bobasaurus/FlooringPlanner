@@ -6,6 +6,10 @@ namespace FlooringPlanner
         {
             InitializeComponent();
 
+            //GOOD COMBOS:
+            //76, 72 rev, 52
+            //76, 23 rev, 52
+
             trackBar1.Minimum = 0;
             trackBar1.Maximum = 100;
             trackBar1.TickFrequency = 1;
