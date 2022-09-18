@@ -35,6 +35,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.trackBar3 = new System.Windows.Forms.TrackBar();
+            this.reverseCheckBox1 = new System.Windows.Forms.CheckBox();
+            this.reverseCheckBox2 = new System.Windows.Forms.CheckBox();
+            this.reverseCheckBox3 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).BeginInit();
@@ -55,9 +58,9 @@
             // 
             this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar1.Location = new System.Drawing.Point(0, 2);
+            this.trackBar1.Location = new System.Drawing.Point(66, 2);
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(532, 45);
+            this.trackBar1.Size = new System.Drawing.Size(466, 45);
             this.trackBar1.TabIndex = 1;
             this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
             // 
@@ -65,9 +68,9 @@
             // 
             this.trackBar2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar2.Location = new System.Drawing.Point(0, 49);
+            this.trackBar2.Location = new System.Drawing.Point(66, 49);
             this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(532, 45);
+            this.trackBar2.Size = new System.Drawing.Size(466, 45);
             this.trackBar2.TabIndex = 2;
             this.trackBar2.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
             // 
@@ -105,17 +108,53 @@
             // 
             this.trackBar3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar3.Location = new System.Drawing.Point(0, 96);
+            this.trackBar3.Location = new System.Drawing.Point(66, 96);
             this.trackBar3.Name = "trackBar3";
-            this.trackBar3.Size = new System.Drawing.Size(532, 45);
+            this.trackBar3.Size = new System.Drawing.Size(466, 45);
             this.trackBar3.TabIndex = 5;
             this.trackBar3.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
+            // 
+            // reverseCheckBox1
+            // 
+            this.reverseCheckBox1.AutoSize = true;
+            this.reverseCheckBox1.Location = new System.Drawing.Point(12, 2);
+            this.reverseCheckBox1.Name = "reverseCheckBox1";
+            this.reverseCheckBox1.Size = new System.Drawing.Size(48, 19);
+            this.reverseCheckBox1.TabIndex = 7;
+            this.reverseCheckBox1.Text = "Rev.";
+            this.reverseCheckBox1.UseVisualStyleBackColor = true;
+            this.reverseCheckBox1.CheckedChanged += new System.EventHandler(this.reverseCheckBox_CheckedChanged);
+            // 
+            // reverseCheckBox2
+            // 
+            this.reverseCheckBox2.AutoSize = true;
+            this.reverseCheckBox2.Location = new System.Drawing.Point(12, 49);
+            this.reverseCheckBox2.Name = "reverseCheckBox2";
+            this.reverseCheckBox2.Size = new System.Drawing.Size(48, 19);
+            this.reverseCheckBox2.TabIndex = 8;
+            this.reverseCheckBox2.Text = "Rev.";
+            this.reverseCheckBox2.UseVisualStyleBackColor = true;
+            this.reverseCheckBox2.CheckedChanged += new System.EventHandler(this.reverseCheckBox_CheckedChanged);
+            // 
+            // reverseCheckBox3
+            // 
+            this.reverseCheckBox3.AutoSize = true;
+            this.reverseCheckBox3.Location = new System.Drawing.Point(12, 96);
+            this.reverseCheckBox3.Name = "reverseCheckBox3";
+            this.reverseCheckBox3.Size = new System.Drawing.Size(48, 19);
+            this.reverseCheckBox3.TabIndex = 9;
+            this.reverseCheckBox3.Text = "Rev.";
+            this.reverseCheckBox3.UseVisualStyleBackColor = true;
+            this.reverseCheckBox3.CheckedChanged += new System.EventHandler(this.reverseCheckBox_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(532, 711);
+            this.Controls.Add(this.reverseCheckBox3);
+            this.Controls.Add(this.reverseCheckBox2);
+            this.Controls.Add(this.reverseCheckBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.trackBar3);
             this.Controls.Add(this.label2);
@@ -143,5 +182,8 @@
         private Label label2;
         private Label label3;
         private TrackBar trackBar3;
+        private CheckBox reverseCheckBox1;
+        private CheckBox reverseCheckBox2;
+        private CheckBox reverseCheckBox3;
     }
 }

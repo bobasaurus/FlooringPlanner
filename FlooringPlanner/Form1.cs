@@ -9,17 +9,18 @@ namespace FlooringPlanner
             trackBar1.Minimum = 0;
             trackBar1.Maximum = 100;
             trackBar1.TickFrequency = 1;
-            trackBar1.Value = 93;
+            trackBar1.Value = 76;//93;
 
             trackBar2.Minimum = 0;
             trackBar2.Maximum = 100;
             trackBar2.TickFrequency = 1;
-            trackBar2.Value = 21;
+            trackBar2.Value = 72;//21;
+            reverseCheckBox2.Checked = true;
 
             trackBar3.Minimum = 0;
             trackBar3.Maximum = 100;
             trackBar3.TickFrequency = 1;
-            trackBar3.Value = 65;
+            trackBar3.Value = 52;//65;
 
             trackBar_ValueChanged(null, null);
         }
@@ -35,6 +36,11 @@ namespace FlooringPlanner
             label1.Text = string.Format("{0:0.00}", lengthFraction1);
             label2.Text = string.Format("{0:0.00}", lengthFraction2);
             label3.Text = string.Format("{0:0.00}", lengthFraction3);
+        }
+
+        private void reverseCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.boardLayoutControl1.SetReverse(reverseCheckBox1.Checked, reverseCheckBox2.Checked, reverseCheckBox3.Checked);
         }
     }
 }

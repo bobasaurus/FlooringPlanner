@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace FlooringPlanner
             public float X, Y, Width, Height;//inches
             public Color FillColor;
             public Color LineColor;
+            public bool IsReverse = false;
         }
         private List<List<FlooringRectangle>> flooringRectangles = new List<List<FlooringRectangle>>();
 
@@ -43,9 +45,9 @@ namespace FlooringPlanner
             this.DoubleBuffered = true;
         }
 
-        private float lengthFraction1 = 1.0f;
-        private float lengthFraction2 = 0.75f;
-        private float lengthFraction3 = 0.25f;
+        private float lengthFraction1 = 0;//1.0f;
+        private float lengthFraction2 = 0;//0.75f;
+        private float lengthFraction3 = 0;//0.25f;
 
         public void SetStartingLengths(float lengthFraction1, float lengthFraction2, float lengthFraction3)
         {
@@ -55,7 +57,15 @@ namespace FlooringPlanner
             this.Refresh();
         }
 
-        
+        private bool row1Reverse = false, row2Reverse = false, row3Reverse = false;
+
+        public void SetReverse(bool row1Reverse, bool row2Reverse, bool row3Reverse)
+        {
+            this.row1Reverse = row1Reverse;
+            this.row2Reverse = row2Reverse;
+            this.row3Reverse = row3Reverse;
+            this.Refresh();
+        }
 
         private float CalcRow(out List<FlooringRectangle> row, float startLocationY, float firstBoardLength, Color lineColor, Color fillColor)
         {
@@ -69,8 +79,6 @@ namespace FlooringPlanner
             bool done = false;
             while (!done)
             {
-
-
                 if ((locationX + currentBoardLength) >= (roomWidth - expansionGap))
                 {
                     currentBoardLength = (roomWidth - expansionGap) - locationX;
@@ -84,8 +92,6 @@ namespace FlooringPlanner
                     fr.FillColor = fillColor;
                     if (fr.Width < smallestDesiredBoardLength) fr.FillColor = Color.Red;
                     row.Add(fr);
-
-
 
                     residualLength = boardLength - currentBoardLength - sawKerf;
                     done = true;
@@ -110,38 +116,57 @@ namespace FlooringPlanner
             return residualLength;
         }
 
-        /*private float DrawRow(Graphics g, Pen pen, Brush fillBrush, float startLocationY, float firstBoardLength)
+        private float CalcRowReverse(out List<FlooringRectangle> row, float startLocationY, float firstBoardLength, Color lineColor, Color fillColor)
         {
+            row = new List<FlooringRectangle>();
+
             if (firstBoardLength > boardLength) throw new Exception("Invalid first board length: " + firstBoardLength);
             float residualLength = 0;
 
-            float locationX = expansionGap;
+            float locationX = roomWidth - expansionGap - firstBoardLength;
             float currentBoardLength = firstBoardLength;
             bool done = false;
             while (!done)
             {
-
-
-                if ((locationX + currentBoardLength) >= (roomWidth - expansionGap))
+                if ((locationX) <= expansionGap)
                 {
-                    currentBoardLength = (roomWidth - expansionGap) - locationX;
-                    g.FillRectangle(fillBrush, InchesToPixelsRect(locationX, startLocationY, currentBoardLength, boardWidth));
-                    g.DrawRectangle(pen, InchesToPixelsRect(locationX, startLocationY, currentBoardLength, boardWidth));
+                    currentBoardLength = currentBoardLength + locationX - expansionGap; //(roomWidth - expansionGap) - locationX;
+
+                    FlooringRectangle fr = new FlooringRectangle();
+                    fr.X = expansionGap;
+                    fr.Y = (float)startLocationY;
+                    fr.Width = currentBoardLength;
+                    fr.Height = (float)boardWidth;
+                    fr.LineColor = lineColor;
+                    fr.FillColor = fillColor;
+                    if (fr.Width < smallestDesiredBoardLength) fr.FillColor = Color.Red;
+                    fr.IsReverse = true;
+                    row.Add(fr);
+
                     residualLength = boardLength - currentBoardLength - sawKerf;
                     done = true;
                 }
                 else
                 {
-                    g.FillRectangle(fillBrush, InchesToPixelsRect(locationX, startLocationY, currentBoardLength, boardWidth));
-                    g.DrawRectangle(pen, InchesToPixelsRect(locationX, startLocationY, currentBoardLength, boardWidth));
+                    FlooringRectangle fr = new FlooringRectangle();
+                    fr.X = locationX;
+                    fr.Y = startLocationY;
+                    fr.Width = currentBoardLength;
+                    fr.Height = boardWidth;
+                    fr.LineColor = lineColor;
+                    fr.FillColor = fillColor;
+                    if (fr.Width < smallestDesiredBoardLength) fr.FillColor = Color.Red;
+                    fr.IsReverse = true;
+                    row.Add(fr);
 
-                    locationX += currentBoardLength;
+                    locationX -= currentBoardLength;
                     currentBoardLength = boardLength;
                 }
             }
 
             return residualLength;
-        }*/
+        }
+
 
         private (float xPixels, float yPixels) InchesToPixels2D(float xInches, float yInches)
         {
@@ -177,81 +202,35 @@ namespace FlooringPlanner
             var startingBoardLength = boardLength * lengthFraction1;
             for (float yPos = expansionGap; yPos <= (roomLength - expansionGap); yPos += boardWidth * 3)
             {
-                startingBoardLength = CalcRow(out List<FlooringRectangle> row, yPos, startingBoardLength, Color.Black, Color.Orange);
+                List<FlooringRectangle> row;
+                if (row1Reverse)
+                    startingBoardLength = CalcRowReverse(out row, yPos, startingBoardLength, Color.Black, Color.Orange);
+                else
+                    startingBoardLength = CalcRow(out row, yPos, startingBoardLength, Color.Black, Color.Orange);
                 flooringRectangles.Add(row);
             }
 
             startingBoardLength = boardLength * lengthFraction2;
             for (float yPos = expansionGap + boardWidth; yPos <= (roomLength - expansionGap); yPos += boardWidth * 3)
             {
-                startingBoardLength = CalcRow(out List<FlooringRectangle> row, yPos, startingBoardLength, Color.Black, Color.Teal);
+                List<FlooringRectangle> row;
+                if (row2Reverse)
+                    startingBoardLength = CalcRowReverse(out row, yPos, startingBoardLength, Color.Black, Color.Teal);
+                else
+                    startingBoardLength = CalcRow(out row, yPos, startingBoardLength, Color.Black, Color.Teal);
                 flooringRectangles.Add(row);
             }
 
             startingBoardLength = boardLength * lengthFraction3;
             for (float yPos = expansionGap + boardWidth * 2; yPos <= (roomLength - expansionGap); yPos += boardWidth * 3)
             {
-                startingBoardLength = CalcRow(out List<FlooringRectangle> row, yPos, startingBoardLength, Color.Black, Color.LightBlue);
+                List<FlooringRectangle> row;
+                if (row3Reverse)
+                    startingBoardLength = CalcRowReverse(out row, yPos, startingBoardLength, Color.Black, Color.LightBlue);
+                else
+                    startingBoardLength = CalcRow(out row, yPos, startingBoardLength, Color.Black, Color.LightBlue);
                 flooringRectangles.Add(row);
             }
-
-            //overly-complicated way of checking if board ends are too close to other board ends on adjacent rows
-            /*
-            for (int rowIndex = 0; rowIndex < flooringRectangles.Count(); rowIndex++)
-            {
-                var row = flooringRectangles[rowIndex];
-                List<FlooringRectangle> prevRow = (rowIndex > 0) ? flooringRectangles[rowIndex - 1] : null;
-                List<FlooringRectangle> nextRow = (rowIndex < (flooringRectangles.Count() - 1))? flooringRectangles[rowIndex + 1] : null;
-
-                for (int colIndex = 0; colIndex < row.Count(); colIndex++)
-                {
-                    var rect = row[colIndex];
-
-                    if (prevRow != null)
-                        foreach (var compareRect in prevRow)
-                        {
-                            if (Math.Abs(rect.X - (0 + expansionGap)) > 1)
-                            {
-                                if ((Math.Abs(rect.X - compareRect.X) < endJointStaggerMinSeparation) || (Math.Abs(rect.X - (compareRect.X + compareRect.Width)) < endJointStaggerMinSeparation))
-                                {
-                                    rect.LineColor = Color.Red;
-                                    compareRect.LineColor = Color.Red;
-                                }
-                            }
-
-                            if (Math.Abs((rect.X + rect.Width) - (roomWidth - expansionGap)) > 1)
-                            {
-                                if ((Math.Abs((rect.X + rect.Width) - compareRect.X) < endJointStaggerMinSeparation) || (Math.Abs((rect.X + rect.Width) - (compareRect.X + compareRect.Width)) < endJointStaggerMinSeparation))
-                                {
-                                    rect.LineColor = Color.Red;
-                                    compareRect.LineColor = Color.Red;
-                                }
-                            }
-                        }
-
-                    if (nextRow != null)
-                        foreach (var compareRect in nextRow)
-                        {
-                            if (Math.Abs(rect.X - (0 + expansionGap)) > 1)
-                            {
-                                if ((Math.Abs(rect.X - compareRect.X) < endJointStaggerMinSeparation) || (Math.Abs(rect.X - (compareRect.X + compareRect.Width)) < endJointStaggerMinSeparation))
-                                {
-                                    rect.LineColor = Color.Red;
-                                    compareRect.LineColor = Color.Red;
-                                }
-                            }
-
-                            if (Math.Abs((rect.X + rect.Width) - (roomWidth - expansionGap)) > 1)
-                            {
-                                if ((Math.Abs((rect.X + rect.Width) - compareRect.X) < endJointStaggerMinSeparation) || (Math.Abs((rect.X + rect.Width) - (compareRect.X + compareRect.Width)) < endJointStaggerMinSeparation))
-                                {
-                                    rect.LineColor = Color.Red;
-                                    compareRect.LineColor = Color.Red;
-                                }
-                            }
-                        }
-                }
-            }*/
 
             foreach (var row in flooringRectangles)
             {
@@ -259,6 +238,7 @@ namespace FlooringPlanner
                 {
                     Pen pen = new Pen(rect.LineColor, 2);
                     Brush fillBrush = new SolidBrush(rect.FillColor);
+                    if (rect.IsReverse) fillBrush = new HatchBrush(HatchStyle.ForwardDiagonal, Color.White, rect.FillColor);
 
                     g.FillRectangle(fillBrush, InchesToPixelsRect(rect.X, rect.Y, rect.Width, rect.Height));
                     g.DrawRectangle(pen, InchesToPixelsRect(rect.X, rect.Y, rect.Width, rect.Height));
