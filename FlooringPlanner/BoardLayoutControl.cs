@@ -209,6 +209,53 @@ namespace FlooringPlanner
 
             flooringRectangles.Clear();
 
+            int resetAfterSequences = 3;
+
+            var startingBoardLength1 = boardLength * lengthFraction1;
+            var startingBoardLength2 = boardLength * lengthFraction2;
+            var startingBoardLength3 = boardLength * lengthFraction3;
+            float yPos = expansionGap;
+            int sequenceCount = 0;
+            while (yPos < (roomLength - expansionGap))
+            { 
+                List<FlooringRectangle> row;
+                if (row1Reverse)
+                    startingBoardLength1 = CalcRowReverse(out row, yPos, startingBoardLength1, Color.Black, Color.Orange);
+                else
+                    startingBoardLength1 = CalcRow(out row, yPos, startingBoardLength1, Color.Black, Color.Orange);
+                flooringRectangles.Add(row);
+
+                yPos += boardWidth;
+
+                if (row2Reverse)
+                    startingBoardLength2 = CalcRowReverse(out row, yPos, startingBoardLength2, Color.Black, Color.Teal);
+                else
+                    startingBoardLength2 = CalcRow(out row, yPos, startingBoardLength2, Color.Black, Color.Teal);
+                flooringRectangles.Add(row);
+
+                yPos += boardWidth;
+
+                if (row3Reverse)
+                    startingBoardLength3 = CalcRowReverse(out row, yPos, startingBoardLength3, Color.Black, Color.LightBlue);
+                else
+                    startingBoardLength3 = CalcRow(out row, yPos, startingBoardLength3, Color.Black, Color.LightBlue);
+                flooringRectangles.Add(row);
+
+                yPos += boardWidth;
+                sequenceCount++;
+
+                if (sequenceCount >= resetAfterSequences)
+                {
+                    sequenceCount = 0;
+                    startingBoardLength1 = boardLength * lengthFraction1;
+                    startingBoardLength2 = boardLength * lengthFraction2;
+                    startingBoardLength3 = boardLength * lengthFraction3;
+                }
+            }
+
+
+
+            /*
             var startingBoardLength = boardLength * lengthFraction1;
             for (float yPos = expansionGap; yPos <= (roomLength - expansionGap); yPos += boardWidth * 3)
             {
@@ -240,7 +287,7 @@ namespace FlooringPlanner
                 else
                     startingBoardLength = CalcRow(out row, yPos, startingBoardLength, Color.Black, Color.LightBlue);
                 flooringRectangles.Add(row);
-            }
+            }*/
 
             foreach (var row in flooringRectangles)
             {

@@ -6,25 +6,27 @@ namespace FlooringPlanner
         {
             InitializeComponent();
 
-            //GOOD COMBOS:
-            //76, 72 rev, 52
-            //76, 23 rev, 52
+            //GOOD COMBOS (good numbers: 76, 52, 33, 0):  (76 forward = 0 reverse)
+            //0, 34, 76
+            //52, 0, 33
+            //0, 33, 52 (3 shorts on left, 7 on right)
+
 
             trackBar1.Minimum = 0;
             trackBar1.Maximum = 100;
             trackBar1.TickFrequency = 1;
-            trackBar1.Value = 76;//93;
+            trackBar1.Value = 52;//76;//93;
 
             trackBar2.Minimum = 0;
             trackBar2.Maximum = 100;
             trackBar2.TickFrequency = 1;
-            trackBar2.Value = 72;//21;
-            reverseCheckBox2.Checked = true;
+            trackBar2.Value = 0;//72;//21;
+            reverseCheckBox2.Checked = false;
 
             trackBar3.Minimum = 0;
             trackBar3.Maximum = 100;
             trackBar3.TickFrequency = 1;
-            trackBar3.Value = 52;//65;
+            trackBar3.Value = 33;//52;//65;
 
             trackBar_ValueChanged(null, null);
         }
