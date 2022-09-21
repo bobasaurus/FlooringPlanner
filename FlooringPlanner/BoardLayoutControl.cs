@@ -18,13 +18,17 @@ namespace FlooringPlanner
 
         private float roomWidth = 136.75f;//in
         private float roomLength = 155.0f;//in
-        private const float expansionGap = 3.0f / 8.0f;//in
+        private const float expansionGap = 1.0f / 4.0f;//3.0f / 8.0f;//in  //using a smaller expansion gap than recommended since it's fine with the nail installation and works out better for pattern
         private const float sawKerf = 3.0f / 32.0f;//in
         //the dimensions of the finished surface of the bamboo planks
         private const float boardWidth = 5 + 1.0f / 8.0f; //in
         private const float boardLength = 36 + 3.0f / 16.0f; //in
         private const float endJointStaggerMinSeparation = 8.0f;//in
         private const float smallestDesiredBoardLength = 10.0f;//in
+
+        private int resetAfterSequences = 3;
+        private float firstBoardWidth = 3.0f;
+        private bool isFirstRow = true;
 
         private class FlooringRectangle
         {
@@ -90,9 +94,9 @@ namespace FlooringPlanner
 
                     FlooringRectangle fr = new FlooringRectangle();
                     fr.X = locationX;
-                    fr.Y = (float)startLocationY;
+                    fr.Y = startLocationY;
                     fr.Width = currentBoardLength;
-                    fr.Height = (float)boardWidth;
+                    fr.Height = isFirstRow ? firstBoardWidth : boardWidth;
                     fr.LineColor = lineColor;
                     fr.FillColor = fillColor;
                     if (fr.Width < smallestDesiredBoardLength) fr.FillColor = Color.Red;
@@ -107,7 +111,7 @@ namespace FlooringPlanner
                     fr.X = locationX;
                     fr.Y = startLocationY;
                     fr.Width = currentBoardLength;
-                    fr.Height = boardWidth;
+                    fr.Height = isFirstRow? firstBoardWidth : boardWidth;
                     fr.LineColor = lineColor;
                     fr.FillColor = fillColor;
                     if (fr.Width < smallestDesiredBoardLength) fr.FillColor = Color.Red;
@@ -118,6 +122,7 @@ namespace FlooringPlanner
                 }
             }
 
+            isFirstRow = false;
             return residualLength;
         }
 
@@ -146,7 +151,7 @@ namespace FlooringPlanner
                     fr.X = expansionGap;
                     fr.Y = (float)startLocationY;
                     fr.Width = currentBoardLength;
-                    fr.Height = (float)boardWidth;
+                    fr.Height = isFirstRow ? firstBoardWidth : boardWidth;
                     fr.LineColor = lineColor;
                     fr.FillColor = fillColor;
                     if (fr.Width < smallestDesiredBoardLength) fr.FillColor = Color.Red;
@@ -162,7 +167,7 @@ namespace FlooringPlanner
                     fr.X = locationX;
                     fr.Y = startLocationY;
                     fr.Width = currentBoardLength;
-                    fr.Height = boardWidth;
+                    fr.Height = isFirstRow ? firstBoardWidth : boardWidth;
                     fr.LineColor = lineColor;
                     fr.FillColor = fillColor;
                     if (fr.Width < smallestDesiredBoardLength) fr.FillColor = Color.Red;
@@ -174,6 +179,7 @@ namespace FlooringPlanner
                 }
             }
 
+            isFirstRow = false;
             return residualLength;
         }
 
@@ -209,15 +215,17 @@ namespace FlooringPlanner
 
             flooringRectangles.Clear();
 
-            int resetAfterSequences = 3;
-
             var startingBoardLength1 = boardLength * lengthFraction1;
             var startingBoardLength2 = boardLength * lengthFraction2;
             var startingBoardLength3 = boardLength * lengthFraction3;
             float yPos = expansionGap;
             int sequenceCount = 0;
+            isFirstRow = true;
             while (yPos < (roomLength - expansionGap))
-            { 
+            {
+                float yIncrement = boardWidth;
+                if (isFirstRow) yIncrement = firstBoardWidth;
+
                 List<FlooringRectangle> row;
                 if (row1Reverse)
                     startingBoardLength1 = CalcRowReverse(out row, yPos, startingBoardLength1, Color.Black, Color.Orange);
@@ -225,7 +233,7 @@ namespace FlooringPlanner
                     startingBoardLength1 = CalcRow(out row, yPos, startingBoardLength1, Color.Black, Color.Orange);
                 flooringRectangles.Add(row);
 
-                yPos += boardWidth;
+                yPos += yIncrement;
 
                 if (row2Reverse)
                     startingBoardLength2 = CalcRowReverse(out row, yPos, startingBoardLength2, Color.Black, Color.Teal);
