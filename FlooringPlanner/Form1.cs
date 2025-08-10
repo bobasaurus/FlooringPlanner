@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace FlooringPlanner
 {
     public partial class Form1 : Form
@@ -6,27 +8,33 @@ namespace FlooringPlanner
         {
             InitializeComponent();
 
+            this.Text = this.boardLayoutControl1.RoomName;
+
             //GOOD COMBOS (good numbers: 76, 52, 33, 0):  (76 forward = 0 reverse)
             //0, 34, 76
             //52, 0, 33
             //0, 33, 52 (3 shorts on left, 7 on right)
 
+            //54, 0, 33: junk room
+
+            //0, 33, 75: master bedroom
+
 
             trackBar1.Minimum = 0;
             trackBar1.Maximum = 100;
             trackBar1.TickFrequency = 1;
-            trackBar1.Value = 54;//actually use 53.5
+            trackBar1.Value = 0;//actually use 53.5
 
             trackBar2.Minimum = 0;
             trackBar2.Maximum = 100;
             trackBar2.TickFrequency = 1;
-            trackBar2.Value = 0;
+            trackBar2.Value = 33;
             reverseCheckBox2.Checked = false;
 
             trackBar3.Minimum = 0;
             trackBar3.Maximum = 100;
             trackBar3.TickFrequency = 1;
-            trackBar3.Value = 33;
+            trackBar3.Value = 75;
 
             trackBar_ValueChanged(null, null);
         }

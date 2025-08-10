@@ -16,8 +16,15 @@ namespace FlooringPlanner
         private float screenWidth;//pixels
         private float screenHeight;//pixels
 
-        private float roomWidth = 136.75f;//in
-        private float roomLength = 155.0f;//in
+        
+        //public string RoomName = "Junk Room";
+        //private float roomWidth = 136.75f;
+        //private float roomLength = 155.0f;
+
+        public string RoomName = "Master Bedroom";
+        private float roomWidth = 136.125f;//in
+        private float roomLength = 154.75f;//in
+
         private const float expansionGap = 1.0f / 4.0f;//3.0f / 8.0f;//in  //using a smaller expansion gap than recommended since it's fine with the nail installation and works out better for pattern
         private const float sawKerf = 3.0f / 32.0f;//in
         //the dimensions of the finished surface of the bamboo planks
